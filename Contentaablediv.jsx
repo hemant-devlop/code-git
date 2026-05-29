@@ -1,75 +1,90 @@
-"use client";
+'use client'
+import React, { useState, useRef, useEffect } from "react";
 
-import { useState, useRef } from "react";
-
-export default function InteractiveEditor() {
-  const editorRef = useRef(null);
-  const [msgData, setMsgData] = useState("");
-  console.log(msgData)
+export default function IndentedTagTextArea() {
+  const [currentTag, setCurrentTag] = useState("");
+  const [text, setText] = useState("");
+  const [textIndent, setTextIndent] = useState("0px");
   
-  const tags = [
-    { label: "Create Chart", value: " /Create-Chart\u00A0 " },
-    { label: "Create Exam", value: " /Create-Exam\u00A0 " },
-    { label: "Create Image", value: " /Create-Image\u00A0 " },
-  ];
+  const tagRef = useRef(null);
+  const textareaRef = useRef(null);
+  const tags = ["exam", "paper", "student", "teacher"];
 
-  // Function to insert the tag at the current cursor position
-  const insertTag = (tagText) => {
-    const editor = editorRef.current;
-    if (!editor) return;
-
-    // Focus the editor so the insertion happens inside it
-    editor.focus();
-    // Create a styled span for the tag
-    const span = document.createElement("span");
-    span.className = "text-red-600 font-semibold";
-    span.textContent = tagText;
-    span.contentEditable = "false";
-
-    // Get the user's current cursor position (Selection API)
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return;
-
-    const range = selection.getRangeAt(0);
-
-    // Check if the cursor is actually inside our editor box
-    if (editor.contains(range.commonAncestorContainer)) {
-      range.deleteContents(); // Delete any highlighted text
-      range.insertNode(span); // Insert our red, semi-bold tag
-
-      // Move the cursor right after the inserted tag
-      range.setStartAfter(span);
-      range.setEndAfter(span);
-      selection.removeAllRanges();
-      selection.addRange(range);
-
+  // Calculate and update the text-indent whenever the active tag changes
+  useEffect(() => {
+    if (currentTag && tagRef.current) {
+      // Get the width of the tag element in pixels
+      const tagWidth = tagRef.current.offsetWidth;
+      // Indent equals the tag width + a tiny gap (e.g., 4px)
+      setTextIndent(`${tagWidth + 4}px`);
     } else {
-      // If the editor wasn't focused, just append it to the end
-      editor.appendChild(span);
-    } 
+      setTextIndent("0px");
+    }
+  }, [currentTag]);
+
+  // Handle Backspace detection
+  const handleKeyDown = (e) => {
+    // If textarea is completely empty and user hits Backspace
+    if (e.key === "Backspace" && text === "") {
+      setCurrentTag(""); // Remove the tag
+    }
+  };
+
+  const handleTagClick = (tag) => {
+    setCurrentTag(tag);
+    // Focus the textarea right after clicking a tag for better UX
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto space-y-4">
-      <div
-      id="editDiv"
-        ref={editorRef}
-         contentEditable
-        suppressContentEditableWarning
-        className="w-full min-h-40 max-h-60 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-black text-base overflow-y-auto"
-        placeholder="Type your text here..."
-      onInput={(e) => setMsgData(e.target.textContent)}
-      />
-        <div className="flex gap-2">
+    <div className="w-full max-w-xl mx-auto p-6 bg-gray-50 rounded-xl shadow-md space-y-4">
+      {/* Tag Selection Buttons */}
+      <div className="flex gap-2">
         {tags.map((tag) => (
           <button
-            key={tag.label}
-            onClick={() => insertTag(tag.value)}
-            className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded text-sm font-medium transition-colors"
+            key={tag}
+            type="button"
+            onClick={() => handleTagClick(tag)}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
+              currentTag === tag
+                ? "bg-purple-600 text-white border-purple-600"
+                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+            }`}
           >
-            + {tag.label}
+            {tag}
           </button>
         ))}
+      </div>
+
+      {/* Textarea Container */}
+      <div className="relative w-full">
+        {/* Absolute Layered Tag */}
+        {currentTag && (
+          <span
+            ref={tagRef}
+            className="absolute left-3 top-3 text-purple-700 font-semibold pointer-events-none select-none z-10 block whitespace-nowrap"
+            style={{ direction: "ltr" }}
+          >
+            "{currentTag}" - 
+          </span>
+        )}
+
+        {/* Indented Native Textarea */}
+        <textarea
+          ref={textareaRef}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className="w-full min-h-[120px] p-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 font-sans text-gray-800 text-base resize-y block z-0"
+          style={{ 
+            textIndent: textIndent,
+            direction: "ltr",
+            textAlign: "left"
+          }}
+          placeholder={currentTag ? "" : "Select a tag or start typing..."}
+        />
       </div>
     </div>
   );
