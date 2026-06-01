@@ -41,22 +41,7 @@ export default function IndentedTagTextArea() {
   return (
     <div className="w-full max-w-xl mx-auto p-6 bg-gray-50 rounded-xl shadow-md space-y-4">
       {/* Tag Selection Buttons */}
-      <div className="flex gap-2">
-        {tags.map((tag) => (
-          <button
-            key={tag}
-            type="button"
-            onClick={() => handleTagClick(tag)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
-              currentTag === tag
-                ? "bg-purple-600 text-white border-purple-600"
-                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-            }`}
-          >
-            {tag}
-          </button>
-        ))}
-      </div>
+     
 
       {/* Textarea Container */}
       <div className="relative w-full">
@@ -85,6 +70,22 @@ export default function IndentedTagTextArea() {
           }}
           placeholder={currentTag ? "" : "Select a tag or start typing..."}
         />
+      </div>
+       <div className="flex gap-2">
+        {tags.map((tag) => (
+          <button
+            key={tag}
+            type="button"
+            onClick={() => handleTagClick(tag)}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
+              currentTag === tag
+                ? "bg-purple-600 text-white border-purple-600"
+                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+            }`}
+          >
+            {tag}
+          </button>
+        ))}
       </div>
     </div>
   );
