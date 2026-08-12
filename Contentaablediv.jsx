@@ -1,92 +1,205 @@
-'use client'
-import React, { useState, useRef, useEffect } from "react";
+"use client";
 
-export default function IndentedTagTextArea() {
-  const [currentTag, setCurrentTag] = useState("");
-  const [text, setText] = useState("");
-  const [textIndent, setTextIndent] = useState("0px");
-  
-  const tagRef = useRef(null);
-  const textareaRef = useRef(null);
-  const tags = ["exam", "paper", "student", "teacher"];
-
-  // Calculate and update the text-indent whenever the active tag changes
-  useEffect(() => {
-    if (currentTag && tagRef.current) {
-      // Get the width of the tag element in pixels
-      const tagWidth = tagRef.current.offsetWidth;
-      // Indent equals the tag width + a tiny gap (e.g., 4px)
-      setTextIndent(`${tagWidth + 4}px`);
-    } else {
-      setTextIndent("0px");
-    }
-  }, [currentTag]);
-
-  // Handle Backspace detection
-  const handleKeyDown = (e) => {
-    // If textarea is completely empty and user hits Backspace
-    if (e.key === "Backspace" && text === "") {
-      setCurrentTag(""); // Remove the tag
-    }
-  };
-
-  const handleTagClick = (tag) => {
-    setCurrentTag(tag);
-    // Focus the textarea right after clicking a tag for better UX
-    if (textareaRef.current) {
-      textareaRef.current.focus();
-    }
-  };
-
+const Page = () => {
   return (
-    <div className="w-full max-w-xl mx-auto p-6 bg-gray-50 rounded-xl shadow-md space-y-4">
-      {/* Tag Selection Buttons */}
-     
+    <main className="min-h-[calc(100dvh-80px)] w-full overflow-hidden bg-[#f5f5f5]">
 
-      {/* Textarea Container */}
-      <div className="relative w-full">
-        {/* Absolute Layered Tag */}
-        {currentTag && (
-          <span
-            ref={tagRef}
-            className="absolute left-3 top-3 text-purple-700 font-semibold pointer-events-none select-none z-10 block whitespace-nowrap"
-            style={{ direction: "ltr" }}
-          >
-            "{currentTag}" - 
-          </span>
-        )}
+      <section className="mx-auto flex min-h-[calc(100dvh-80px)] w-full max-w-7xl flex-col items-center">
 
-        {/* Indented Native Textarea */}
-        <textarea
-          ref={textareaRef}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="w-full min-h-[120px] p-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 font-sans text-gray-800 text-base resize-y block z-0"
-          style={{ 
-            textIndent: textIndent,
-            direction: "ltr",
-            textAlign: "left"
-          }}
-          placeholder={currentTag ? "" : "Select a tag or start typing..."}
-        />
-      </div>
-       <div className="flex gap-2">
-        {tags.map((tag) => (
+        {/* ================= HERO CONTENT ================= */}
+
+        <div className="flex w-full shrink-0 flex-col items-center px-4 pt-8 text-center md:pt-10">
+
+          <p className="text-sm font-medium text-[#8f45a8] md:text-base">
+            Application éducative d'excellence
+          </p>
+
+          <h1 className="mt-3 text-[clamp(2rem,4vw,4rem)] font-medium leading-tight">
+            Transformez Votre Avenir Avec
+          </h1>
+
+          <h2 className="text-[clamp(2.2rem,5vw,5rem)] font-bold leading-tight text-[#8f45a8]">
+            IQRA Education
+          </h2>
+
+          <p className="mt-4 max-w-3xl text-sm leading-6 text-gray-600 md:text-base lg:text-lg">
+            Réussir à l'école commence par un bon accompagnement.
+            Apprenez mieux, progressez plus vite et choisissez votre avenir
+            avec IQRA.
+          </p>
+
           <button
-            key={tag}
-            type="button"
-            onClick={() => handleTagClick(tag)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
-              currentTag === tag
-                ? "bg-purple-600 text-white border-purple-600"
-                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-            }`}
+            className="
+              mt-6
+              rounded-full
+              border
+              border-[#9b4bb5]
+              px-10
+              py-3
+              text-base
+              font-medium
+              text-[#9b4bb5]
+              transition
+              hover:bg-[#9b4bb5]
+              hover:text-white
+              md:px-16
+              md:py-4
+              md:text-lg
+            "
           >
-            {tag}
+            Télécharger l'app
           </button>
-        ))}
-      </div>
-    </div>
+
+        </div>
+
+
+        {/* ================= PHONE STAGE ================= */}
+
+        <div className="relative mt-6 flex min-h-0 w-full flex-1 items-end justify-center overflow-hidden">
+
+          {/* OUTER CIRCLE */}
+          <div
+            className="
+              absolute
+              bottom-[-60%]
+              left-1/2
+              aspect-square
+              w-[95%]
+              -translate-x-1/2
+              rounded-full
+              border
+              border-gray-300
+            "
+          />
+
+          {/* INNER CIRCLE */}
+          <div
+            className="
+              absolute
+              bottom-[-52%]
+              left-1/2
+              aspect-square
+              w-[75%]
+              -translate-x-1/2
+              rounded-full
+              border
+              border-gray-300
+            "
+          />
+
+          {/* COLORED HALF CIRCLE */}
+          <div
+            className="
+              absolute
+              bottom-[-48%]
+              left-1/2
+              aspect-square
+              w-[67%]
+              -translate-x-1/2
+              rounded-full
+              bg-gradient-to-r
+              from-[#f4df55]
+              via-[#d5a5bd]
+              to-[#a96db6]
+            "
+          />
+
+          {/* LEFT FLOATING CARD */}
+          <div
+            className="
+              absolute
+              left-[2%]
+              top-[10%]
+              z-30
+              hidden
+              w-[300px]
+              rounded-xl
+              bg-white
+              p-3
+              shadow-sm
+              md:block
+              lg:w-[360px]
+            "
+          >
+            <div className="flex gap-3">
+
+              <div className="h-14 w-24 shrink-0 rounded-lg bg-gray-200" />
+
+              <div>
+                <span className="rounded-full bg-green-500 px-3 py-1 text-[10px] font-bold text-white">
+                  SVT
+                </span>
+
+                <p className="mt-1 text-sm font-semibold leading-4 text-gray-700">
+                  Le rôle des chromosomes dans la transmission de
+                  l'information génétique
+                </p>
+              </div>
+
+            </div>
+
+            <div className="mt-3 h-1 rounded-full bg-gray-200">
+              <div className="h-full w-[85%] rounded-full bg-yellow-400" />
+            </div>
+
+            <p className="mt-1 text-[10px] text-gray-400">
+              Progrès : 85%
+            </p>
+          </div>
+
+
+          {/* RIGHT FLOATING CARD */}
+          <div
+            className="
+              absolute
+              right-[2%]
+              top-[15%]
+              z-30
+              hidden
+              w-[300px]
+              rounded-xl
+              border
+              border-yellow-300
+              bg-white
+              p-4
+              shadow-sm
+              md:block
+              lg:w-[360px]
+            "
+          >
+            <p className="text-sm font-semibold text-gray-700">
+              Course : Propagation d'onde lumineuse
+            </p>
+
+            <p className="mt-1 text-xs text-gray-400">
+              15 min
+            </p>
+          </div>
+
+
+          {/* PHONE */}
+          <img
+            src="https://www.iqra.ma/_next/image?url=%2FimageComponents%2FmainPhone.webp&w=2048&q=75"
+            alt="IQRA Education application"
+            className="
+              relative
+              z-20
+              h-auto
+              max-h-full
+              w-[220px]
+              object-contain
+              sm:w-[250px]
+              md:w-[290px]
+              lg:w-[340px]
+            "
+          />
+
+        </div>
+
+      </section>
+
+    </main>
   );
-}
+};
+
+export default Page;
